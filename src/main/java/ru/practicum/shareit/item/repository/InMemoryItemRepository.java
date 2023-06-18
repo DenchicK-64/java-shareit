@@ -9,24 +9,24 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 @Slf4j
 @Repository
 public class InMemoryItemRepository implements ItemRepository {
     private final Map<Long, Item> items = new HashMap<>();
+    private final Map<Long, Long> userItemsId = new HashMap<>();
     private long itemId = 1L;
 
     @Override
     public Item create(Item item) {
         item.setId(itemId++);
         items.put(item.getId(), item);
+        userItemsId.put(item.getId(), item.getOwner().getId());
         log.info("Пользователь добавлен: {}", item.getName());
         return item;
     }
 
     @Override
     public Item update(long itemId, Item item) {
-        checkItem(itemId);
         Item updItem = getItem(itemId);
         if (!updItem.getOwner().equals(item.getOwner())) {
             throw new OperationAccessException("Нельзя выполнить обновление: пользователь не является собственником вещи");
@@ -41,22 +41,27 @@ public class InMemoryItemRepository implements ItemRepository {
             updItem.setAvailable(item.getAvailable());
         }
         items.put(itemId, updItem);
-        log.info("Пользователь добавлен: {}", updItem.getName());
+        log.info("Вещь добавлена: {}", updItem.getName());
         return updItem;
     }
 
     @Override
     public List<Item> findAll(long userId) {
         log.info("Получение всех вещей пользователя");
-        return items.values().stream()
-                .filter(Item -> Objects.equals(Item.getOwner().getId(), userId))
+        List<Long> ids = userItemsId.entrySet().stream()
+                .filter(entry -> Objects.equals(entry.getValue(), userId))
+                .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
+        return ids.stream().map(this::getItem).collect(Collectors.toList());
     }
 
     @Override
     public Item getItem(long itemId) {
-        checkItem(itemId);
-        return items.get(itemId);
+        Item item = items.get(itemId);
+        if (item != null) {
+            return item;
+        }
+        throw new NotFoundException("Вещь не найдена в базе данных");
     }
 
     @Override
@@ -69,12 +74,5 @@ public class InMemoryItemRepository implements ItemRepository {
         return items.values().stream().filter(Item -> Item.getAvailable() && (Item.getName().toLowerCase().contains(text.toLowerCase())
                         || Item.getDescription().toLowerCase().contains(text.toLowerCase())))
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public void checkItem(long itemId) {
-        if (!items.containsKey(itemId)) {
-            throw new NotFoundException("Вещь не найдена в базе данных");
-        }
     }
 }

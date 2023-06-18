@@ -17,6 +17,4 @@ public interface ItemRepository {
     void delete(long itemId);
 
     List<Item> findItemByName(String text);
-
-    void checkItem(long itemId);
 }
