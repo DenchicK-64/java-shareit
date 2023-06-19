@@ -13,14 +13,23 @@ import java.util.stream.Collectors;
 @Repository
 public class InMemoryItemRepository implements ItemRepository {
     private final Map<Long, Item> items = new HashMap<>();
-    private final Map<Long, Long> userItemsId = new HashMap<>();
+    /*private final List<Item> itemList = new ArrayList<>();*/
+    /*private final Map<Long, Long> userItemsId = new HashMap<>();*/
+    private final Map<Long, List<Item>> userItems = new HashMap<>();
     private long itemId = 1L;
 
     @Override
     public Item create(Item item) {
         item.setId(itemId++);
         items.put(item.getId(), item);
-        userItemsId.put(item.getId(), item.getOwner().getId());
+        if (!userItems.containsKey(item.getOwner().getId())) {
+            userItems.put(item.getOwner().getId(), new ArrayList<>());
+            userItems.get(item.getOwner().getId()).add(item);
+        } else {
+            userItems.get(item.getOwner().getId()).add(item);
+        }
+        /*userItems.computeIfAbsent(item.getOwner().getId(), k -> itemList.add(item));*/
+        /*userItemsId.put(item.getId(), item.getOwner().getId());*/
         log.info("Пользователь добавлен: {}", item.getName());
         return item;
     }
@@ -48,11 +57,13 @@ public class InMemoryItemRepository implements ItemRepository {
     @Override
     public List<Item> findAll(long userId) {
         log.info("Получение всех вещей пользователя");
-        List<Long> ids = userItemsId.entrySet().stream()
+        return userItems.get(userId);
+        /*List<Long> ids = userItemsId.entrySet().stream()
                 .filter(entry -> Objects.equals(entry.getValue(), userId))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
-        return ids.stream().map(this::getItem).collect(Collectors.toList());
+        return ids.stream().map(this::getItem).collect(Collectors.toList());*/
+
     }
 
     @Override

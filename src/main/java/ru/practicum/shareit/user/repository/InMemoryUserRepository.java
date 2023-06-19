@@ -12,19 +12,22 @@ import java.util.*;
 @Repository
 public class InMemoryUserRepository implements UserRepository {
     private final Map<Long, User> users = new HashMap<>();
-    private final Map<String, Long> userEmails = new HashMap<>();
+    /*private final Map<String, Long> userEmails = new HashMap<>();*/
+    private final Set<String> userEmails = new HashSet<>();
     private long userId = 1L;
 
     @Override
     public User create(User user) {
-        if (userEmails.containsKey(user.getEmail())) {
+        /*if (userEmails.containsKey(user.getEmail())) {*/
+        if (userEmails.contains(user.getEmail())){
             throw new UserAlreadyExistsException("Пользователь с этим email уже существует");
         }
         user.setId(userId++);
         users.put(user.getId(), user);
-        userEmails.put(user.getEmail(), user.getId());
+        userEmails.add(user.getEmail());
+        /*userEmails.put(user.getEmail(), user.getId());*/
         log.info("Пользователь добавлен: {}", user.getName());
-        System.out.println(userEmails);
+        log.info("Список уникальных email после создания нового пользователя: {}", userEmails);
         return user;
     }
 
@@ -32,7 +35,8 @@ public class InMemoryUserRepository implements UserRepository {
     public User update(long userId, User user) {
         User updUser = getUser(userId);
         String oldEmail = getUser(userId).getEmail();
-        if (hasEmailDuplicates(user.getEmail(), userId)) {
+        /*if (hasEmailDuplicates(user.getEmail(), userId)) {*/
+        if ((hasEmailDuplicates(user.getEmail()) && (userId != user.getId()))) {
             throw new UserAlreadyExistsException("Пользователь с этим email уже существует");
         }
         if (user.getName() != null && !user.getName().isBlank()) {
@@ -43,9 +47,10 @@ public class InMemoryUserRepository implements UserRepository {
         }
         users.put(userId, updUser);
         userEmails.remove(oldEmail);
-        userEmails.put(updUser.getEmail(), userId);
+        userEmails.add(updUser.getEmail());
+        /*userEmails.put(updUser.getEmail(), userId);*/
         log.info("Пользователь добавлен: {}", user.getName());
-        System.out.println(userEmails);
+        log.info("Список уникальных email после апдейта пользователя: {}", userEmails);
         return updUser;
     }
 
@@ -71,7 +76,8 @@ public class InMemoryUserRepository implements UserRepository {
         users.remove(userId);
     }
 
-    private boolean hasEmailDuplicates(String email, long userId) {
-        return userEmails.containsKey(email) && userId != userEmails.get(email);
+    private boolean hasEmailDuplicates(String email/*, long userId*/) {
+        return userEmails.contains(email);
+        /*return userEmails.containsKey(email) && userId != userEmails.get(email);*/
     }
 }
