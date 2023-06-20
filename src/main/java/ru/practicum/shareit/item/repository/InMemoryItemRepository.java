@@ -26,7 +26,7 @@ public class InMemoryItemRepository implements ItemRepository {
         } else {
             userItems.get(item.getOwner().getId()).add(item);
         }
-        log.info("Пользователь добавлен: {}", item.getName());
+        log.info("Вещь добавлена: {}", item.getName());
         return item;
     }
 
