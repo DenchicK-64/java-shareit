@@ -3,42 +3,34 @@ package ru.practicum.shareit.item.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.request.model.ItemRequest;
+import lombok.ToString;
 import ru.practicum.shareit.user.model.User;
+
+import javax.persistence.*;
 
 /**
  * TODO Sprint add-controllers.
  */
 
+@Entity
+@Table(name = "items")
 @Data
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Item {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(name = "name", nullable = false)
     private String name;
+    @Column(name = "description", nullable = false)
     private String description;
+    @Column(name = "is_available", nullable = false)
     private Boolean available;
+    @ManyToOne
+    @ToString.Exclude
+    @JoinColumn(name = "owner_id")
     private User owner;
-    private ItemRequest itemRequest;
-
-    public Item(String name, String description, boolean available) {
-        this.name = name;
-        this.description = description;
-        this.available = available;
-    }
-
-    public Item(long id, String name, String description, boolean available) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.available = available;
-    }
-
-    public Item(long id, String name, String description, Boolean available, User owner) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.available = available;
-        this.owner = owner;
-    }
+    /*private ItemRequest itemRequest;*/
 }

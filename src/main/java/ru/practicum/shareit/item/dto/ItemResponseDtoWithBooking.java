@@ -3,18 +3,17 @@ package ru.practicum.shareit.item.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.booking.dto.ShortBookingDto;
+import ru.practicum.shareit.item.comment.dto.CommentDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
-/**
- * TODO Sprint add-controllers.
- */
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemDto {
+public class ItemResponseDtoWithBooking {
     private long id;
     @NotBlank(message = "Название должно содержать текст")
     private String name;
@@ -22,4 +21,7 @@ public class ItemDto {
     private String description;
     @NotNull
     private Boolean available;
+    private ShortBookingDto lastBooking;
+    private ShortBookingDto nextBooking;
+    private List<CommentDto> comments;
 }
