@@ -218,6 +218,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-checkstyle-plugin</artifactId>
+						<version>3.3.0</version>
 					</plugin>
 					<plugin>
 						<groupId>com.github.spotbugs</groupId>
@@ -246,5 +247,4 @@
 			</build>
 		</profile>
 	</profiles>
-
 </project>
