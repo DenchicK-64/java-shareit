@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     public UserDto update(long userId, UserDto userDto) {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Пользователь с id" + userId + "не найден в базе данных"));
-        if (userDto.getEmail() != null & !user.getEmail().isBlank()) {
+        if (userDto.getEmail() != null) {
             user.setEmail(userDto.getEmail());
         }
         if (userDto.getName() != null & !user.getName().isBlank()) {
