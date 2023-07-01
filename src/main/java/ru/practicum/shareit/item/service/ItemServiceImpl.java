@@ -54,6 +54,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto update(long userId, long itemId, ItemDto itemDto) {
         Item updItem = itemRepository.findItemsByIdAndOwnerId(itemId, userId);
+        if (updItem == null) {
+            throw new NotFoundException("Вещь с id" + itemId + "не найдена в базе данных");
+        }
         if (updItem.getOwner().getId() != userId) {
             throw new OperationAccessException("Нельзя выполнить обновление: пользователь не является собственником вещи");
         }

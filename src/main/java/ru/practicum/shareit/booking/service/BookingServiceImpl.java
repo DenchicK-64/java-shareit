@@ -55,6 +55,9 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingResponseDto approve(long userId, long bookingId, boolean approved) {
         Booking booking = bookingRepository.findBookingByIdAndOwnerId(bookingId, userId);
+        if (booking == null) {
+            throw new NotFoundException("Запрос на бронирование с id " + bookingId + " не найден в базе данных");
+        }
         if (bookingRepository.findBookingByIdAndBookerId(bookingId, userId) != null) {
             throw new NotFoundException("Владелец вещи не может её сам забронировать");
         }
