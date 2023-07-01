@@ -34,42 +34,57 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "INNER JOIN Item i ON b.item.id = i.id " +
             "WHERE i.owner.id = :ownerId " +
             "ORDER BY b.start DESC")
-    List<Booking> findAllByOwnerIdOrderByStartDesc(Long ownerId);
+    List<Booking> findAllBookingsByOwnerId(long ownerId);
 
     @Query("SELECT b FROM Booking b " +
             "INNER JOIN Item i ON b.item.id = i.id " +
             "WHERE i.owner.id = :ownerId " +
             "AND :time BETWEEN b.start AND b.end " +
             "ORDER BY b.start DESC")
-    List<Booking> findAllByOwnerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc(Long ownerId, LocalDateTime time);
+    List<Booking> findAllBookingsByOwnerIdWithStatusCurrent(long ownerId, LocalDateTime time);
 
     @Query("SELECT b FROM Booking b " +
             "INNER JOIN Item i ON b.item.id = i.id " +
             "WHERE i.owner.id = :ownerId " +
             "AND b.end < :time " +
             "ORDER BY b.start DESC")
-    List<Booking> findAllByOwnerIdAndEndIsBeforeOrderByStartDesc(Long ownerId, LocalDateTime time);
+    List<Booking> findAllBookingsByOwnerIdWithStatusPast(long ownerId, LocalDateTime time);
 
     @Query("SELECT b FROM Booking b " +
             "INNER JOIN Item i ON b.item.id = i.id " +
             "WHERE i.owner.id = :ownerId " +
             "AND b.start > :time " +
             "ORDER BY b.start DESC")
-    List<Booking> findAllByOwnerIdAndStartIsAfterOrderByStartDesc(Long ownerId, LocalDateTime time);
+    List<Booking> findAllBookingsByOwnerIdWithStatusFuture(long ownerId, LocalDateTime time);
 
     @Query("SELECT b FROM Booking b " +
             "INNER JOIN Item i ON b.item.id = i.id " +
             "WHERE i.owner.id = :ownerId " +
             "AND b.start > :time AND b.status = :status " +
             "ORDER BY b.start DESC")
-    List<Booking> findAllByOwnerIdAndStartIsAfterAndStatusIsOrderByStartDesc(Long ownerId, LocalDateTime time, Status status);
+    List<Booking> findAllBookingsByOwnerIdWithStatusWaiting(long ownerId, LocalDateTime time, Status status);
 
     @Query("SELECT b FROM Booking b " +
             "INNER JOIN Item i ON b.item.id = i.id " +
             "WHERE i.owner.id = :ownerId " +
             "AND b.status = :status " +
             "ORDER BY b.start DESC")
-    List<Booking> findAllByOwnerIdAndStatusIsOrderByStartDesc(Long ownerId, Status status);
+    List<Booking> findAllBookingsByOwnerIdWithStatusRejected(long ownerId, Status status);
+
+    // Поиск бронирования по id и id автора бронирования:
+
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.id = :bookingId " +
+            "AND b.booker.id = :bookerId ")
+    Booking findBookingByIdAndBookerId(long bookingId, long bookerId);
+
+    // Поиск бронирования по id и id владельца вещи:
+
+    @Query("SELECT b FROM Booking b " +
+            "INNER JOIN Item i ON b.item.id = i.id " +
+            "WHERE i.owner.id = :ownerId " +
+            "AND b.id = :bookingId ")
+    Booking findBookingByIdAndOwnerId(long bookingId, long ownerId);
 
     // Для остального:
     Booking findFirstByBookerAndItemAndEndIsBeforeOrderByEndDesc(User user, Item item, LocalDateTime now);

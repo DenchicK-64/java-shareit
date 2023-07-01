@@ -15,7 +15,7 @@ public class CommentDto {
     private long id;
     @NotBlank(message = "Отзыв должен содержать текст")
     private String text;
-    private ItemDto itemDto;
+    private long itemId;
     private String authorName;
     private LocalDateTime created;
 }

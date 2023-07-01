@@ -50,13 +50,10 @@ public class ItemServiceImpl implements ItemService {
         return toItemDto(newItem);
     }
 
+    @Transactional
     @Override
     public ItemDto update(long userId, long itemId, ItemDto itemDto) {
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new NotFoundException("Пользователь с id" + userId + "не найден в базе данных"));
-        /*Item item = toItem(itemDto, user);*/
-        Item updItem = itemRepository.findById(itemId).orElseThrow(() ->
-                new NotFoundException("Вещь с id" + itemId + "не найдена в базе данных"));
+        Item updItem = itemRepository.findItemsByIdAndOwnerId(itemId, userId);
         if (updItem.getOwner().getId() != userId) {
             throw new OperationAccessException("Нельзя выполнить обновление: пользователь не является собственником вещи");
         }
@@ -78,13 +75,10 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemResponseDtoWithBooking> findAll(long userId) {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Пользователь с id" + userId + "не найден в базе данных"));
-        LocalDateTime now = LocalDateTime.now();
-
         List<Item> items = itemRepository.findAllByOwnerId(userId);
         List<ItemResponseDtoWithBooking> itemResponseDtoWithBookingList = new ArrayList<>();
         for (Item item : items) {
             List<CommentDto> comments = CommentMapper.toCommentDtoList(commentRepository.findAllByItemId(item.getId()));
-
             itemResponseDtoWithBookingList.add(toItemResponseDtoWithBooking(item, null, null, comments));
         }
         return itemResponseDtoWithBookingList.stream()
@@ -139,7 +133,6 @@ public class ItemServiceImpl implements ItemService {
             throw new NotAvailableException("Пользователь с " + userId + " не бронировал вещь с " + itemId);
         }
         Comment comment = CommentMapper.toComment(commentDto, user, item);
-        comment.setCreated(now);
         log.info(String.valueOf(comment));
         Comment newComment = commentRepository.save(comment);
         return CommentMapper.toCommentDto(newComment);

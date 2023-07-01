@@ -15,6 +15,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,18 +30,15 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public BookingResponseDto create(long userId, BookingRequestDto bookingRequestDto) {
-        if (bookingRequestDto.getStart().isAfter(bookingRequestDto.getEnd()) || bookingRequestDto.getStart().equals(bookingRequestDto.getEnd())) {
-            throw new TimeConflictException("Дата окончания бронирования не может быть раньше даты начала бронирования или равна ей");
-        }
+        checkTimeConflict(bookingRequestDto.getStart(), bookingRequestDto.getEnd());
         User booker = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Пользователь с id " + userId + " не найден в базе данных"));
         Long itemId = bookingRequestDto.getItemId();
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
                 new NotFoundException("Вещь с id " + itemId + " не найдена в базе данных"));
-        if (!item.getAvailable()) {
-            throw new NotAvailableException("Вещь с id " + itemId + " в данный момент не доступна для бронирования");
-        }
+        checkAvailabilityForBooking(item);
         if (item.getOwner().getId() == userId) {
             throw new NotFoundException("Владелец вещи не может её сам забронировать");
         }
@@ -54,12 +52,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingResponseDto approve(long userId, long bookingId, boolean approved) { //???????????????????????????????????
-        User owner = userRepository.findById(userId).orElseThrow(() ->
-                new NotFoundException("Пользователь с id " + userId + " не найден в базе данных"));
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
-                new NotFoundException("Запрос на бронирование с id " + bookingId + " не найден в базе данных"));
-        if (booking.getBooker().getId() == userId) {
+    @Transactional
+    public BookingResponseDto approve(long userId, long bookingId, boolean approved) {
+        Booking booking = bookingRepository.findBookingByIdAndOwnerId(bookingId, userId);
+        if (bookingRepository.findBookingByIdAndBookerId(bookingId, userId) != null) {
             throw new NotFoundException("Владелец вещи не может её сам забронировать");
         }
         if (!booking.getStatus().equals(Status.WAITING)) {
@@ -79,6 +75,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingResponseDto getBooking(long userId, long bookingId) {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Пользователь с id " + userId + " не найден в базе данных"));
@@ -95,6 +92,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public List<BookingResponseDto> findAllByBookerId(long userId, String state) {
         User booker = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Пользователь с id " + userId + " не найден в базе данных"));
@@ -136,6 +134,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public List<BookingResponseDto> findAllByOwnerId(long ownerId, String state) {
         User owner = userRepository.findById(ownerId).orElseThrow(() ->
                 new NotFoundException("Пользователь с id " + ownerId + " не найден в базе данных"));
@@ -143,23 +142,23 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings;
         switch (state) {
             case "ALL":
-                bookings = bookingRepository.findAllByOwnerIdOrderByStartDesc(ownerId);
+                bookings = bookingRepository.findAllBookingsByOwnerId(ownerId);
                 break;
             case "CURRENT":
-                bookings = bookingRepository.findAllByOwnerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc(ownerId, now);
+                bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusCurrent(ownerId, now);
                 break;
             case "PAST":
-                bookings = bookingRepository.findAllByOwnerIdAndEndIsBeforeOrderByStartDesc(ownerId, now);
+                bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusPast(ownerId, now);
                 break;
             case "FUTURE":
-                bookings = bookingRepository.findAllByOwnerIdAndStartIsAfterOrderByStartDesc(ownerId, now);
+                bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusFuture(ownerId, now);
                 break;
             case "WAITING":
-                bookings = bookingRepository.findAllByOwnerIdAndStartIsAfterAndStatusIsOrderByStartDesc(ownerId, now,
+                bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusWaiting(ownerId, now,
                         Status.WAITING);
                 break;
             case "REJECTED":
-                bookings = bookingRepository.findAllByOwnerIdAndStatusIsOrderByStartDesc(ownerId, Status.REJECTED);
+                bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusRejected(ownerId, Status.REJECTED);
                 break;
             default:
                 throw new ValidationException("Unknown state: " + state);
@@ -168,5 +167,17 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("Отсутствуют операции по бронированию вещей пользователя " + ownerId);
         }
         return bookings.stream().map(BookingMapper::toBookingResponseDto).collect(Collectors.toList());
+    }
+
+    private void checkAvailabilityForBooking(Item item) {
+        if (!item.getAvailable()) {
+            throw new NotAvailableException("Вещь с id " + item.getId() + " в данный момент не доступна для бронирования");
+        }
+    }
+
+    private void checkTimeConflict(LocalDateTime start, LocalDateTime end) {
+        if (start.isAfter(end) || start.equals(end)) {
+            throw new TimeConflictException("Дата окончания бронирования не может быть раньше даты начала бронирования или равна ей");
+        }
     }
 }
