@@ -33,6 +33,7 @@ import static ru.practicum.shareit.item.mapper.ItemMapper.*;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
@@ -40,7 +41,6 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
 
-    @Transactional
     @Override
     public ItemDto create(long userId, ItemDto itemDto) {
         User user = userRepository.findById(userId).orElseThrow(() ->
@@ -50,7 +50,6 @@ public class ItemServiceImpl implements ItemService {
         return toItemDto(newItem);
     }
 
-    @Transactional
     @Override
     public ItemDto update(long userId, long itemId, ItemDto itemDto) {
         Item updItem = itemRepository.findItemsByIdAndOwnerId(itemId, userId);
@@ -73,7 +72,6 @@ public class ItemServiceImpl implements ItemService {
         return toItemDto(updItem1);
     }
 
-    @Transactional
     @Override
     public List<ItemResponseDtoWithBooking> findAll(long userId) {
         User user = userRepository.findById(userId).orElseThrow(() ->
@@ -90,7 +88,6 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     @Override
     public ItemResponseDtoWithBooking getItem(long userId, long itemId) {
         ItemResponseDtoWithBooking itemResponseDtoWithBooking;
@@ -105,14 +102,12 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    @Transactional
     @Override
     public void delete(long itemId) {
         itemRepository.deleteById(itemId);
     }
 
     @Override
-    @Transactional
     public List<ItemDto> findItemByName(String text) {
         if (text != null && !text.isBlank()) {
             List<Item> allItems = itemRepository.search(text);
@@ -122,7 +117,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Transactional
     public CommentDto createComment(long userId, long itemId, CommentDto commentDto) {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Пользователь с id" + userId + "не найден в базе данных"));

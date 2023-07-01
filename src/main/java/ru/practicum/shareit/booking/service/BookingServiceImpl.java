@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
@@ -30,7 +31,6 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
 
     @Override
-    @Transactional
     public BookingResponseDto create(long userId, BookingRequestDto bookingRequestDto) {
         checkTimeConflict(bookingRequestDto.getStart(), bookingRequestDto.getEnd());
         User booker = userRepository.findById(userId).orElseThrow(() ->
@@ -52,7 +52,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional
     public BookingResponseDto approve(long userId, long bookingId, boolean approved) {
         Booking booking = bookingRepository.findBookingByIdAndOwnerId(bookingId, userId);
         if (booking == null) {
@@ -78,24 +77,16 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional
     public BookingResponseDto getBooking(long userId, long bookingId) {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Пользователь с id " + userId + " не найден в базе данных"));
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
-                new NotFoundException("Запрос на бронирование с id " + bookingId + " не найден в базе данных"));
-        log.info("Пользователь с id = " + userId + " запросил информацию о бронировании с id = " + bookingId +
-                ". id собственника вещи = " + booking.getBooker().getId() + ", id арендатора = "
-                + booking.getItem().getOwner().getId());
-        if (booking.getBooker().getId() == userId || booking.getItem().getOwner().getId() == userId) {
-            return BookingMapper.toBookingResponseDto(booking);
-        } else {
-            throw new NotFoundException("Просматривать бронирование может либо владелец вещи, либо автор бронирования");
-        }
+        return bookingRepository.findById(bookingId)
+                .filter(b -> b.getBooker().getId() == userId || b.getItem().getOwner().getId() == userId)
+                .map(BookingMapper::toBookingResponseDto)
+                .orElseThrow(() -> new NotFoundException("Просматривать бронирование может либо владелец вещи, либо автор бронирования"));
     }
 
     @Override
-    @Transactional
     public List<BookingResponseDto> findAllByBookerId(long userId, String state) {
         User booker = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Пользователь с id " + userId + " не найден в базе данных"));
@@ -137,7 +128,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional
     public List<BookingResponseDto> findAllByOwnerId(long ownerId, String state) {
         User owner = userRepository.findById(ownerId).orElseThrow(() ->
                 new NotFoundException("Пользователь с id " + ownerId + " не найден в базе данных"));

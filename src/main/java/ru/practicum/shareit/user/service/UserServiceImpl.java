@@ -18,11 +18,11 @@ import static ru.practicum.shareit.user.mapper.UserMapper.toUserDto;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-    @Transactional
     @Override
     public UserDto create(UserDto userDto) {
         User user = toUser(userDto);
@@ -30,7 +30,6 @@ public class UserServiceImpl implements UserService {
         return toUserDto(newUser);
     }
 
-    @Transactional
     @Override
     public UserDto update(long userId, UserDto userDto) {
         User user = userRepository.findById(userId).orElseThrow(() ->
@@ -45,14 +44,12 @@ public class UserServiceImpl implements UserService {
         return toUserDto(updUser);
     }
 
-    @Transactional
     @Override
     public List<UserDto> findAll() {
         List<User> allUsers = userRepository.findAll();
         return allUsers.stream().map(UserMapper::toUserDto).collect(Collectors.toList());
     }
 
-    @Transactional
     @Override
     public UserDto getUser(long userId) {
         User user = userRepository.findById(userId).orElseThrow(() ->
@@ -60,7 +57,6 @@ public class UserServiceImpl implements UserService {
         return toUserDto(user);
     }
 
-    @Transactional
     @Override
     public void delete(long userId) {
         userRepository.deleteById(userId);
