@@ -118,8 +118,6 @@ public class ItemRequestServiceImplTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUserTwo));
         when(itemRequestRepository.findAllByRequesterIdOrderByCreatedDesc(anyLong())).thenReturn(List.of(itemRequestOne));
         when(itemRepository.findAllByItemRequest(any())).thenReturn(List.of(testItem));
-        /*ItemRequestDtoWithItems itemRequestDtoWithItems = ItemRequestMapper.toItemRequestDtoWithItems(itemRequestOne,
-        List.of(ItemMapper.toItemDto(testItem)));*/
         List<ItemRequestDtoWithItems> requestDtoWithItemsList = itemRequestService.findAllByUserId(testUserTwo.getId());
 
         assertNotNull(requestDtoWithItemsList);
@@ -150,8 +148,6 @@ public class ItemRequestServiceImplTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUserTwo));
         when(itemRequestRepository.findAllByRequesterIdIsNot(anyLong(), any())).thenReturn(List.of(itemRequestTwo));
         when(itemRepository.findAllByItemRequest(any())).thenReturn(List.of(testItemTwo));
-        /*ItemRequestDtoWithItems itemRequestDtoWithItems = ItemRequestMapper.toItemRequestDtoWithItems(itemRequestOne,
-        List.of(ItemMapper.toItemDto(testItemTwo)));*/
         List<ItemRequestDtoWithItems> requestDtoWithItemsList = itemRequestService.findAll(testUserTwo.getId(), 0, 5);
 
         assertNotNull(requestDtoWithItemsList);

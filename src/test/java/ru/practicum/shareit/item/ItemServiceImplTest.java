@@ -341,8 +341,8 @@ public class ItemServiceImplTest {
         assertEquals(newCommentDto.getCreated(), commentDto.getCreated());
         verify(userRepository, times(1)).findById(anyLong());
         verify(itemRepository, times(1)).findById(anyLong());
-        verify(bookingRepository, times(1)).findFirstByBookerAndItemAndEndIsBeforeOrderByEndDesc
-                (testUserTwo, testItem, now);
+        verify(bookingRepository, times(1))
+                .findFirstByBookerAndItemAndEndIsBeforeOrderByEndDesc(testUserTwo, testItem, now);
         verify(commentRepository, times(1)).save(any(Comment.class));
     }
 }
