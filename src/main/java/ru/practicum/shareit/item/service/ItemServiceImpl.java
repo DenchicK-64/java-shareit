@@ -101,7 +101,6 @@ public class ItemServiceImpl implements ItemService {
             itemResponseDtoWithBookingList.add(toItemResponseDtoWithBooking(item, null, null, comments));
         }
         return itemResponseDtoWithBookingList.stream()
-                /*.peek((i) -> CommentMapper.toCommentDtoList(commentRepository.findAllByItemId(i.getId())))*/
                 .peek(this::setBookings)
                 .collect(Collectors.toList());
     }
