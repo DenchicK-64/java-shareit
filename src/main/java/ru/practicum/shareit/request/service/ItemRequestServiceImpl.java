@@ -75,6 +75,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         }
         return itemRequestDtoWithItems;
     }
+
     private List<ItemDto> setItems(ItemRequest itemRequest) {
         List<ItemDto> items = itemRepository.findAllByItemRequest(itemRequest).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
         return items;

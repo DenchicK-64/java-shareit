@@ -93,7 +93,7 @@ public class ItemServiceImpl implements ItemService {
         if (from < 0 || size <= 0) {
             throw new ValidationException("Индекс первого элемента не может быть отрицательным и количество отображаемых элементов должно быть больше 0");
         }
-        PageRequest pageRequest = PageRequest.of(from/size, size);
+        PageRequest pageRequest = PageRequest.of(from / size, size);
         List<Item> items = itemRepository.findAllByOwnerId(userId, pageRequest);
         List<ItemResponseDtoWithBooking> itemResponseDtoWithBookingList = new ArrayList<>();
         for (Item item : items) {
@@ -129,7 +129,7 @@ public class ItemServiceImpl implements ItemService {
         if (from < 0 || size <= 0) {
             throw new ValidationException("Индекс первого элемента не может быть отрицательным и количество отображаемых элементов должно быть больше 0");
         }
-        PageRequest pageRequest = PageRequest.of(from/size, size);
+        PageRequest pageRequest = PageRequest.of(from / size, size);
         if (text != null && !text.isBlank()) {
             List<Item> allItems = itemRepository.search(text, pageRequest);
             return allItems.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());

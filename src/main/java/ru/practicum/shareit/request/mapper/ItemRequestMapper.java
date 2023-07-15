@@ -29,7 +29,7 @@ public class ItemRequestMapper {
         );
     }
 
-    public static ItemRequest toItemRequest (ItemRequestDto itemRequestDto, User user) {
+    public static ItemRequest toItemRequest(ItemRequestDto itemRequestDto, User user) {
         return new ItemRequest(
                 itemRequestDto.getId(),
                 itemRequestDto.getDescription(),

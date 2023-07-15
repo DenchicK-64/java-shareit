@@ -88,8 +88,8 @@ public class BookingRepositoryTest {
     public void findAllByBookerIdAndStartIsAfterAndStatusIsOrderByStartDesc_whenDataIsCorrectAndStatusWaiting_thenReturnBookingList() {
         testBookingTwo.setStatus(Status.APPROVED);
         testBookingThree.setStart(LocalDateTime.now().plusHours(1));
-        List<Booking> bookings = bookingRepository.findAllByBookerIdAndStartIsAfterAndStatusIsOrderByStartDesc
-                (testUser.getId(), LocalDateTime.now(), Status.WAITING, pageRequest);
+        List<Booking> bookings = bookingRepository.findAllByBookerIdAndStartIsAfterAndStatusIsOrderByStartDesc(testUser.getId(),
+                LocalDateTime.now(), Status.WAITING, pageRequest);
         assertNotNull(bookings);
         assertEquals(bookings.size(), 1);
         assertEquals(bookings, List.of(testBookingThree));
@@ -97,8 +97,8 @@ public class BookingRepositoryTest {
 
     @Test
     public void findAllByBookerIdAndStartIsAfterAndStatusIsOrderByStartDesc_whenUserWithoutBookings_thenReturnEmptyList() {
-        List<Booking> bookings = bookingRepository.findAllByBookerIdAndStartIsAfterAndStatusIsOrderByStartDesc
-                (testUserThree.getId(), LocalDateTime.now(), Status.WAITING, pageRequest);
+        List<Booking> bookings = bookingRepository.findAllByBookerIdAndStartIsAfterAndStatusIsOrderByStartDesc(testUserThree.getId(),
+                LocalDateTime.now(), Status.WAITING, pageRequest);
         assertNotNull(bookings);
         assertEquals(bookings.size(), 0);
     }
@@ -106,8 +106,8 @@ public class BookingRepositoryTest {
     //CURRENT
     @Test
     public void findAllByBookerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc_whenDataIsCorrectAndStateCurrent_thenReturnBookingList() {
-        List<Booking> bookings = bookingRepository.findAllByBookerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc
-                (testUser.getId(), LocalDateTime.now(), LocalDateTime.now().plusDays(7), pageRequest);
+        List<Booking> bookings = bookingRepository.findAllByBookerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc(testUser.getId(),
+                LocalDateTime.now(), LocalDateTime.now().plusDays(7), pageRequest);
         assertNotNull(bookings);
         assertEquals(bookings.size(), 2);
         assertEquals(bookings, List.of(testBookingThree, testBookingTwo));
@@ -115,8 +115,8 @@ public class BookingRepositoryTest {
 
     @Test
     public void findAllByBookerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc_whenUserWithoutBookings_thenReturnEmptyList() {
-        List<Booking> bookings = bookingRepository.findAllByBookerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc
-                (testUserThree.getId(), LocalDateTime.now(), LocalDateTime.now().plusDays(7), pageRequest);
+        List<Booking> bookings = bookingRepository.findAllByBookerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc(testUserThree.getId(),
+                LocalDateTime.now(), LocalDateTime.now().plusDays(7), pageRequest);
         assertNotNull(bookings);
         assertEquals(bookings.size(), 0);
     }
@@ -125,8 +125,8 @@ public class BookingRepositoryTest {
     @Test
     public void findAllByBookerIdAndEndIsBeforeOrderByStartDesc_whenDataIsCorrectAndStateCurrent_thenReturnBookingList() {
         testBookingTwo.setEnd(LocalDateTime.now().minusHours(10));
-        List<Booking> bookings = bookingRepository.findAllByBookerIdAndEndIsBeforeOrderByStartDesc
-                (testUser.getId(), LocalDateTime.now(), pageRequest);
+        List<Booking> bookings = bookingRepository.findAllByBookerIdAndEndIsBeforeOrderByStartDesc(testUser.getId(),
+                LocalDateTime.now(), pageRequest);
         assertNotNull(bookings);
         assertEquals(bookings.size(), 1);
         assertEquals(bookings, List.of(testBookingTwo));
@@ -134,8 +134,8 @@ public class BookingRepositoryTest {
 
     @Test
     public void findAllByBookerIdAndEndIsBeforeOrderByStartDesc_whenUserWithoutBookings_thenReturnEmptyList() {
-        List<Booking> bookings = bookingRepository.findAllByBookerIdAndEndIsBeforeOrderByStartDesc
-                (testUserThree.getId(), LocalDateTime.now(), pageRequest);
+        List<Booking> bookings = bookingRepository.findAllByBookerIdAndEndIsBeforeOrderByStartDesc(testUserThree.getId(),
+                LocalDateTime.now(), pageRequest);
         assertNotNull(bookings);
         assertEquals(bookings.size(), 0);
     }
@@ -144,8 +144,8 @@ public class BookingRepositoryTest {
     @Test
     public void findAllByBookerIdAndStartIsAfterOrderByStartDesc_whenDataIsCorrectAndStateFuture_thenReturnBookingList() {
         testBookingThree.setStart(LocalDateTime.now().plusDays(1));
-        List<Booking> bookings = bookingRepository.findAllByBookerIdAndStartIsAfterOrderByStartDesc
-                (testUser.getId(), LocalDateTime.now(), pageRequest);
+        List<Booking> bookings = bookingRepository.findAllByBookerIdAndStartIsAfterOrderByStartDesc(testUser.getId(),
+                LocalDateTime.now(), pageRequest);
         assertNotNull(bookings);
         assertEquals(bookings.size(), 1);
         assertEquals(bookings, List.of(testBookingThree));
@@ -153,8 +153,8 @@ public class BookingRepositoryTest {
 
     @Test
     public void findAllByBookerIdAndStartIsAfterOrderByStartDesc_whenUserWithoutBookings_thenReturnEmptyList() {
-        List<Booking> bookings = bookingRepository.findAllByBookerIdAndStartIsAfterOrderByStartDesc
-                (testUserThree.getId(), LocalDateTime.now(), pageRequest);
+        List<Booking> bookings = bookingRepository.findAllByBookerIdAndStartIsAfterOrderByStartDesc(testUserThree.getId(),
+                LocalDateTime.now(), pageRequest);
         assertNotNull(bookings);
         assertEquals(bookings.size(), 0);
     }
@@ -223,8 +223,8 @@ public class BookingRepositoryTest {
         assertEquals(resultList.size(), 1);
         assertEquals(resultList.get(0), testBookingThree);
 
-        List<Booking> bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusWaiting
-                (testUserTwo.getId(), LocalDateTime.now(), Status.WAITING, pageRequest);
+        List<Booking> bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusWaiting(testUserTwo.getId(),
+                LocalDateTime.now(), Status.WAITING, pageRequest);
         assertNotNull(bookings);
         assertEquals(bookings.size(), 1);
         assertEquals(bookings, List.of(testBookingThree));
@@ -232,8 +232,8 @@ public class BookingRepositoryTest {
 
     @Test
     public void findAllBookingsByOwnerIdWithStatusWaiting_whenUserWithoutBookings_thenReturnEmptyList() {
-        List<Booking> bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusWaiting
-                (testUserThree.getId(), LocalDateTime.now(), Status.WAITING, pageRequest);
+        List<Booking> bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusWaiting(testUserThree.getId(),
+                LocalDateTime.now(), Status.WAITING, pageRequest);
         assertNotNull(bookings);
         assertEquals(bookings.size(), 0);
     }
@@ -253,8 +253,8 @@ public class BookingRepositoryTest {
         assertEquals(resultList.size(), 2);
         assertEquals(resultList, List.of(testBookingThree, testBookingTwo));
 
-        List<Booking> bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusCurrent
-                (testUserTwo.getId(), LocalDateTime.now(), pageRequest);
+        List<Booking> bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusCurrent(testUserTwo.getId(),
+                LocalDateTime.now(), pageRequest);
         assertNotNull(bookings);
         assertEquals(bookings.size(), 2);
         assertEquals(bookings, List.of(testBookingThree, testBookingTwo));
@@ -262,8 +262,8 @@ public class BookingRepositoryTest {
 
     @Test
     public void findAllBookingsByOwnerIdWithStatusCurrent_whenOwnerWithoutBookings_thenReturnEmptyList() {
-        List<Booking> bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusCurrent
-                (testUserThree.getId(), LocalDateTime.now(), pageRequest);
+        List<Booking> bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusCurrent(testUserThree.getId(),
+                LocalDateTime.now(), pageRequest);
         assertNotNull(bookings);
         assertEquals(bookings.size(), 0);
     }
@@ -285,8 +285,8 @@ public class BookingRepositoryTest {
         assertEquals(resultList.size(), 1);
         assertEquals(resultList.get(0), testBookingTwo);
 
-        List<Booking> bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusPast
-                (testUserTwo.getId(), LocalDateTime.now(), pageRequest);
+        List<Booking> bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusPast(testUserTwo.getId(),
+                LocalDateTime.now(), pageRequest);
         assertNotNull(bookings);
         assertEquals(bookings.size(), 1);
         assertEquals(bookings, List.of(testBookingTwo));
@@ -294,8 +294,8 @@ public class BookingRepositoryTest {
 
     @Test
     public void findAllBookingsByOwnerIdWithStatusPast_whenOwnerWithoutBookings_thenReturnEmptyList() {
-        List<Booking> bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusPast
-                (testUserThree.getId(), LocalDateTime.now(), pageRequest);
+        List<Booking> bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusPast(testUserThree.getId(),
+                LocalDateTime.now(), pageRequest);
         assertNotNull(bookings);
         assertEquals(bookings.size(), 0);
     }
@@ -316,8 +316,8 @@ public class BookingRepositoryTest {
         assertEquals(resultList.size(), 1);
         assertEquals(resultList.get(0), testBookingThree);
 
-        List<Booking> bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusFuture
-                (testUserTwo.getId(), LocalDateTime.now(), pageRequest);
+        List<Booking> bookings = bookingRepository.findAllBookingsByOwnerIdWithStatusFuture(testUserTwo.getId(),
+                LocalDateTime.now(), pageRequest);
         assertNotNull(bookings);
         assertEquals(bookings.size(), 1);
         assertEquals(bookings, List.of(testBookingThree));
@@ -325,8 +325,8 @@ public class BookingRepositoryTest {
 
     @Test
     public void findAllBookingsByOwnerIdWithStatusFuture_whenOwnerWithoutBookings_thenReturnEmptyList() {
-        List<Booking> bookings = bookingRepository.findAllByBookerIdAndStartIsAfterOrderByStartDesc
-                (testUserThree.getId(), LocalDateTime.now(), pageRequest);
+        List<Booking> bookings = bookingRepository.findAllByBookerIdAndStartIsAfterOrderByStartDesc(testUserThree.getId(),
+                LocalDateTime.now(), pageRequest);
         assertNotNull(bookings);
         assertEquals(bookings.size(), 0);
     }

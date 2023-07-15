@@ -210,8 +210,8 @@ public class BookingServiceImplTest {
     @Test
     public void approve_whenBookingNotFound_thenBookingNotBeApproved() {
         long bookingId = 10;
-        when(bookingRepository.findBookingByIdAndOwnerId(bookingId, testUserTwo.getId())).thenThrow
-                (new NotFoundException("Запрос на бронирование с id " + bookingId + " не найден в базе данных"));
+        when(bookingRepository.findBookingByIdAndOwnerId(bookingId, testUserTwo.getId()))
+                .thenThrow(new NotFoundException("Запрос на бронирование с id " + bookingId + " не найден в базе данных"));
 
         NotFoundException exception = assertThrows(
                 NotFoundException.class,
@@ -316,8 +316,8 @@ public class BookingServiceImplTest {
         assertEquals(bookingResponseDtoList.get(0).getBooker(), UserMapper.toUserDto(testUserTwo));
         assertEquals(bookingResponseDtoList.get(0).getStatus(), Status.WAITING);
         verify(userRepository, times(1)).findById(anyLong());
-        verify(bookingRepository, times(1)).
-                findAllByBookerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc(anyLong(), any(), any(), any());
+        verify(bookingRepository, times(1))
+                .findAllByBookerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc(anyLong(), any(), any(), any());
     }
 
     @Test
@@ -327,8 +327,8 @@ public class BookingServiceImplTest {
         testBookingOne.setStart(now.minusDays(3));
         testBookingOne.setEnd(now.minusDays(1));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUserTwo));
-        when(bookingRepository.findAllByBookerIdAndEndIsBeforeOrderByStartDesc(anyLong(), any(), any())).thenReturn
-                (List.of(testBookingOne, testBookingTwo));
+        when(bookingRepository.findAllByBookerIdAndEndIsBeforeOrderByStartDesc(anyLong(), any(), any()))
+                .thenReturn(List.of(testBookingOne, testBookingTwo));
         List<BookingResponseDto> bookingResponseDtoList = bookingService.findAllByBookerId(testUserTwo.getId(),
                 "PAST", 0, 5);
 
@@ -341,8 +341,8 @@ public class BookingServiceImplTest {
         assertEquals(bookingResponseDtoList.get(0).getBooker(), UserMapper.toUserDto(testUserTwo));
         assertEquals(bookingResponseDtoList.get(0).getStatus(), Status.WAITING);
         verify(userRepository, times(1)).findById(anyLong());
-        verify(bookingRepository, times(1)).
-                findAllByBookerIdAndEndIsBeforeOrderByStartDesc(anyLong(), any(), any());
+        verify(bookingRepository, times(1))
+                .findAllByBookerIdAndEndIsBeforeOrderByStartDesc(anyLong(), any(), any());
     }
 
     @Test
@@ -352,8 +352,8 @@ public class BookingServiceImplTest {
         testBookingOne.setStart(now.plusDays(1));
         testBookingOne.setEnd(now.plusDays(3));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUserTwo));
-        when(bookingRepository.findAllByBookerIdAndStartIsAfterOrderByStartDesc(anyLong(), any(), any())).thenReturn
-                (List.of(testBookingOne, testBookingTwo));
+        when(bookingRepository.findAllByBookerIdAndStartIsAfterOrderByStartDesc(anyLong(), any(), any()))
+                .thenReturn(List.of(testBookingOne, testBookingTwo));
         List<BookingResponseDto> bookingResponseDtoList = bookingService.findAllByBookerId(testUserTwo.getId(),
                 "FUTURE", 0, 5);
 
@@ -366,8 +366,8 @@ public class BookingServiceImplTest {
         assertEquals(bookingResponseDtoList.get(0).getBooker(), UserMapper.toUserDto(testUserTwo));
         assertEquals(bookingResponseDtoList.get(0).getStatus(), Status.WAITING);
         verify(userRepository, times(1)).findById(anyLong());
-        verify(bookingRepository, times(1)).
-                findAllByBookerIdAndStartIsAfterOrderByStartDesc(anyLong(), any(), any());
+        verify(bookingRepository, times(1))
+                .findAllByBookerIdAndStartIsAfterOrderByStartDesc(anyLong(), any(), any());
     }
 
     @Test
@@ -389,8 +389,8 @@ public class BookingServiceImplTest {
         assertEquals(bookingResponseDtoList.get(0).getBooker(), UserMapper.toUserDto(testUserTwo));
         assertEquals(bookingResponseDtoList.get(0).getStatus(), Status.WAITING);
         verify(userRepository, times(1)).findById(anyLong());
-        verify(bookingRepository, times(1)).
-                findAllByBookerIdAndStartIsAfterAndStatusIsOrderByStartDesc(anyLong(), any(), any(), any());
+        verify(bookingRepository, times(1))
+                .findAllByBookerIdAndStartIsAfterAndStatusIsOrderByStartDesc(anyLong(), any(), any(), any());
     }
 
     @Test
@@ -399,8 +399,8 @@ public class BookingServiceImplTest {
         when(clock.getZone()).thenReturn(NOW_ZDT.getZone());
         when(clock.instant()).thenReturn(NOW_ZDT.toInstant());
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUserTwo));
-        when(bookingRepository.findAllByBookerIdAndStatusIsOrderByStartDesc(anyLong(), any(), any())).
-                thenReturn(List.of(testBookingOne, testBookingTwo));
+        when(bookingRepository.findAllByBookerIdAndStatusIsOrderByStartDesc(anyLong(), any(), any()))
+                .thenReturn(List.of(testBookingOne, testBookingTwo));
         List<BookingResponseDto> bookingResponseDtoList = bookingService.findAllByBookerId(testUserTwo.getId(),
                 "REJECTED", 0, 5);
 
@@ -413,8 +413,8 @@ public class BookingServiceImplTest {
         assertEquals(bookingResponseDtoList.get(0).getBooker(), UserMapper.toUserDto(testUserTwo));
         assertEquals(bookingResponseDtoList.get(0).getStatus(), Status.REJECTED);
         verify(userRepository, times(1)).findById(anyLong());
-        verify(bookingRepository, times(1)).
-                findAllByBookerIdAndStatusIsOrderByStartDesc(anyLong(), any(), any());
+        verify(bookingRepository, times(1))
+                .findAllByBookerIdAndStatusIsOrderByStartDesc(anyLong(), any(), any());
     }
 
     @Test
@@ -493,8 +493,8 @@ public class BookingServiceImplTest {
         when(clock.getZone()).thenReturn(NOW_ZDT.getZone());
         when(clock.instant()).thenReturn(NOW_ZDT.toInstant());
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
-        when(bookingRepository.findAllBookingsByOwnerIdWithStatusCurrent(anyLong(), any(), any())).thenReturn
-                (List.of(testBookingOne, testBookingTwo));
+        when(bookingRepository.findAllBookingsByOwnerIdWithStatusCurrent(anyLong(), any(), any()))
+                .thenReturn(List.of(testBookingOne, testBookingTwo));
         List<BookingResponseDto> bookingResponseDtoList = bookingService.findAllByOwnerId(testUser.getId(),
                 "CURRENT", 0, 5);
 
@@ -507,8 +507,8 @@ public class BookingServiceImplTest {
         assertEquals(bookingResponseDtoList.get(0).getBooker(), UserMapper.toUserDto(testUserTwo));
         assertEquals(bookingResponseDtoList.get(0).getStatus(), Status.WAITING);
         verify(userRepository, times(1)).findById(anyLong());
-        verify(bookingRepository, times(1)).
-                findAllBookingsByOwnerIdWithStatusCurrent(anyLong(), any(), any());
+        verify(bookingRepository, times(1))
+                .findAllBookingsByOwnerIdWithStatusCurrent(anyLong(), any(), any());
     }
 
     @Test
@@ -518,8 +518,8 @@ public class BookingServiceImplTest {
         testBookingOne.setStart(now.minusDays(3));
         testBookingOne.setEnd(now.minusDays(1));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
-        when(bookingRepository.findAllBookingsByOwnerIdWithStatusPast(anyLong(), any(), any())).thenReturn
-                (List.of(testBookingOne, testBookingTwo));
+        when(bookingRepository.findAllBookingsByOwnerIdWithStatusPast(anyLong(), any(), any()))
+                .thenReturn(List.of(testBookingOne, testBookingTwo));
         List<BookingResponseDto> bookingResponseDtoList = bookingService.findAllByOwnerId(testUser.getId(),
                 "PAST", 0, 5);
 
@@ -543,8 +543,8 @@ public class BookingServiceImplTest {
         testBookingOne.setStart(now.plusDays(1));
         testBookingOne.setEnd(now.plusDays(3));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
-        when(bookingRepository.findAllBookingsByOwnerIdWithStatusFuture(anyLong(), any(), any())).thenReturn
-                (List.of(testBookingOne, testBookingTwo));
+        when(bookingRepository.findAllBookingsByOwnerIdWithStatusFuture(anyLong(), any(), any()))
+                .thenReturn(List.of(testBookingOne, testBookingTwo));
         List<BookingResponseDto> bookingResponseDtoList = bookingService.findAllByOwnerId(testUser.getId(),
                 "FUTURE", 0, 5);
 
@@ -557,8 +557,8 @@ public class BookingServiceImplTest {
         assertEquals(bookingResponseDtoList.get(0).getBooker(), UserMapper.toUserDto(testUserTwo));
         assertEquals(bookingResponseDtoList.get(0).getStatus(), Status.WAITING);
         verify(userRepository, times(1)).findById(anyLong());
-        verify(bookingRepository, times(1)).
-                findAllBookingsByOwnerIdWithStatusFuture(anyLong(), any(), any());
+        verify(bookingRepository, times(1))
+                .findAllBookingsByOwnerIdWithStatusFuture(anyLong(), any(), any());
     }
 
     @Test
@@ -566,8 +566,8 @@ public class BookingServiceImplTest {
         when(clock.getZone()).thenReturn(NOW_ZDT.getZone());
         when(clock.instant()).thenReturn(NOW_ZDT.toInstant());
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
-        when(bookingRepository.findAllBookingsByOwnerIdWithStatusWaiting(anyLong(), any(), any(), any())).thenReturn
-                (List.of(testBookingOne, testBookingTwo));
+        when(bookingRepository.findAllBookingsByOwnerIdWithStatusWaiting(anyLong(), any(), any(), any()))
+                .thenReturn(List.of(testBookingOne, testBookingTwo));
         List<BookingResponseDto> bookingResponseDtoList = bookingService.findAllByOwnerId(testUser.getId(),
                 "WAITING", 0, 5);
 
@@ -580,8 +580,8 @@ public class BookingServiceImplTest {
         assertEquals(bookingResponseDtoList.get(0).getBooker(), UserMapper.toUserDto(testUserTwo));
         assertEquals(bookingResponseDtoList.get(0).getStatus(), Status.WAITING);
         verify(userRepository, times(1)).findById(anyLong());
-        verify(bookingRepository, times(1)).
-                findAllBookingsByOwnerIdWithStatusWaiting(anyLong(), any(), any(), any());
+        verify(bookingRepository, times(1))
+                .findAllBookingsByOwnerIdWithStatusWaiting(anyLong(), any(), any(), any());
     }
 
     @Test
@@ -590,8 +590,8 @@ public class BookingServiceImplTest {
         when(clock.getZone()).thenReturn(NOW_ZDT.getZone());
         when(clock.instant()).thenReturn(NOW_ZDT.toInstant());
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
-        when(bookingRepository.findAllBookingsByOwnerIdWithStatusRejected(anyLong(), any(), any())).thenReturn
-                (List.of(testBookingOne, testBookingTwo));
+        when(bookingRepository.findAllBookingsByOwnerIdWithStatusRejected(anyLong(), any(), any()))
+                .thenReturn(List.of(testBookingOne, testBookingTwo));
         List<BookingResponseDto> bookingResponseDtoList = bookingService.findAllByOwnerId(testUser.getId(),
                 "REJECTED", 0, 5);
 
@@ -604,8 +604,8 @@ public class BookingServiceImplTest {
         assertEquals(bookingResponseDtoList.get(0).getBooker(), UserMapper.toUserDto(testUserTwo));
         assertEquals(bookingResponseDtoList.get(0).getStatus(), Status.REJECTED);
         verify(userRepository, times(1)).findById(anyLong());
-        verify(bookingRepository, times(1)).
-                findAllBookingsByOwnerIdWithStatusRejected(anyLong(), any(), any());
+        verify(bookingRepository, times(1))
+                .findAllBookingsByOwnerIdWithStatusRejected(anyLong(), any(), any());
     }
 
     @Test
