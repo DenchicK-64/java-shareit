@@ -11,6 +11,7 @@ import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.exceptions.OperationAccessException;
 import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.comment.mapper.CommentMapper;
@@ -148,7 +149,7 @@ public class ItemServiceImplTest {
     }
 
     @Test
-    public void update_whenUpdateOnlyDescription_thenUpdateUser() {
+    public void update_whenUpdateOnlyDescription_thenUpdateItem() {
         String description = testItem.getDescription();
         ItemDto updTestItemDto = new ItemDto(1L, "Test_Name", "Update", true, 1L);
         Item updItem = ItemMapper.toItem(updTestItemDto, testUser, itemRequest);
@@ -164,6 +165,17 @@ public class ItemServiceImplTest {
         assertNotEquals(description, actualItemDto.getDescription());
         verify(itemRepository, times(1)).findItemsByIdAndOwnerId(anyLong(), anyLong());
         verify(itemRepository, times(1)).save(any());
+    }
+
+    @Test
+    public void update_whenUserIsNotOwner_theNotUpdateItem(){
+        ItemDto updTestItemDto = new ItemDto(1L, "Not Valid", "Not Valid", true, 1L);
+        when(itemRepository.findItemsByIdAndOwnerId(anyLong(), anyLong())).thenReturn(testItem);
+        OperationAccessException exception = assertThrows(
+                OperationAccessException.class,
+                () -> itemService.update(testUserTwo.getId(), 1L, updTestItemDto));
+        assertEquals("Нельзя выполнить обновление: пользователь не является собственником вещи", exception.getMessage());
+        verify(itemRepository, times(1)).findItemsByIdAndOwnerId(anyLong(), anyLong());
     }
 
     @Test
