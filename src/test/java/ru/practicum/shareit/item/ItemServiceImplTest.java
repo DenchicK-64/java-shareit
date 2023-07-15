@@ -168,7 +168,7 @@ public class ItemServiceImplTest {
     }
 
     @Test
-    public void update_whenUserIsNotOwner_theNotUpdateItem(){
+    public void update_whenUserIsNotOwner_theNotUpdateItem() {
         ItemDto updTestItemDto = new ItemDto(1L, "Not Valid", "Not Valid", true, 1L);
         when(itemRepository.findItemsByIdAndOwnerId(anyLong(), anyLong())).thenReturn(testItem);
         OperationAccessException exception = assertThrows(
