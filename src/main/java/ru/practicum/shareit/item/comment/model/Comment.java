@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "text", nullable = false)
     private String text;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,5 +32,6 @@ public class Comment {
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
     @Column(name = "created", nullable = false)
+    @CreationTimestamp
     private LocalDateTime created;
 }

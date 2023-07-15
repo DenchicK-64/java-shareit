@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.repository;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.booking.enums.Status;
@@ -13,70 +14,72 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     //Получение всех бронирований пользователя:
-    List<Booking> findAllByBookerIdOrderByStartDesc(long id);
+    List<Booking> findAllByBookerIdOrderByStartDesc(Long id, PageRequest pageRequest);
 
-    List<Booking> findAllByBookerIdAndStatusIsOrderByStartDesc(long id, Status status);
+    List<Booking> findAllByBookerIdAndStatusIsOrderByStartDesc(Long id, Status status, PageRequest pageRequest);
 
-    List<Booking> findAllByBookerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc(long id,
+    List<Booking> findAllByBookerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc(Long id,
                                                                                  LocalDateTime end,
-                                                                                 LocalDateTime start);
+                                                                                 LocalDateTime start,
+                                                                                 PageRequest pageRequest);
 
-    List<Booking> findAllByBookerIdAndEndIsBeforeOrderByStartDesc(long id, LocalDateTime time);
+    List<Booking> findAllByBookerIdAndEndIsBeforeOrderByStartDesc(Long id, LocalDateTime time, PageRequest pageRequest);
 
-    List<Booking> findAllByBookerIdAndStartIsAfterOrderByStartDesc(long id, LocalDateTime time);
+    List<Booking> findAllByBookerIdAndStartIsAfterOrderByStartDesc(Long id, LocalDateTime time, PageRequest pageRequest);
 
-    List<Booking> findAllByBookerIdAndStartIsAfterAndStatusIsOrderByStartDesc(long bookerId,
+    List<Booking> findAllByBookerIdAndStartIsAfterAndStatusIsOrderByStartDesc(Long bookerId,
                                                                               LocalDateTime start,
-                                                                              Status status);
+                                                                              Status status,
+                                                                              PageRequest pageRequest);
     //Получение всех бронирований для все вещей пользователя:
 
     @Query("SELECT b FROM Booking b " +
             "INNER JOIN Item i ON b.item.id = i.id " +
             "WHERE i.owner.id = :ownerId " +
             "ORDER BY b.start DESC")
-    List<Booking> findAllBookingsByOwnerId(long ownerId);
+    List<Booking> findAllBookingsByOwnerId(Long ownerId, PageRequest pageRequest);
 
     @Query("SELECT b FROM Booking b " +
             "INNER JOIN Item i ON b.item.id = i.id " +
             "WHERE i.owner.id = :ownerId " +
             "AND :time BETWEEN b.start AND b.end " +
             "ORDER BY b.start DESC")
-    List<Booking> findAllBookingsByOwnerIdWithStatusCurrent(long ownerId, LocalDateTime time);
+    List<Booking> findAllBookingsByOwnerIdWithStatusCurrent(Long ownerId, LocalDateTime time, PageRequest pageRequest);
 
     @Query("SELECT b FROM Booking b " +
             "INNER JOIN Item i ON b.item.id = i.id " +
             "WHERE i.owner.id = :ownerId " +
             "AND b.end < :time " +
             "ORDER BY b.start DESC")
-    List<Booking> findAllBookingsByOwnerIdWithStatusPast(long ownerId, LocalDateTime time);
+    List<Booking> findAllBookingsByOwnerIdWithStatusPast(Long ownerId, LocalDateTime time, PageRequest pageRequest);
 
     @Query("SELECT b FROM Booking b " +
             "INNER JOIN Item i ON b.item.id = i.id " +
             "WHERE i.owner.id = :ownerId " +
             "AND b.start > :time " +
             "ORDER BY b.start DESC")
-    List<Booking> findAllBookingsByOwnerIdWithStatusFuture(long ownerId, LocalDateTime time);
+    List<Booking> findAllBookingsByOwnerIdWithStatusFuture(Long ownerId, LocalDateTime time, PageRequest pageRequest);
 
     @Query("SELECT b FROM Booking b " +
             "INNER JOIN Item i ON b.item.id = i.id " +
             "WHERE i.owner.id = :ownerId " +
             "AND b.start > :time AND b.status = :status " +
             "ORDER BY b.start DESC")
-    List<Booking> findAllBookingsByOwnerIdWithStatusWaiting(long ownerId, LocalDateTime time, Status status);
+    List<Booking> findAllBookingsByOwnerIdWithStatusWaiting(Long ownerId, LocalDateTime time, Status status, PageRequest pageRequest);
 
     @Query("SELECT b FROM Booking b " +
             "INNER JOIN Item i ON b.item.id = i.id " +
             "WHERE i.owner.id = :ownerId " +
             "AND b.status = :status " +
             "ORDER BY b.start DESC")
-    List<Booking> findAllBookingsByOwnerIdWithStatusRejected(long ownerId, Status status);
+    List<Booking> findAllBookingsByOwnerIdWithStatusRejected(Long ownerId, Status status, PageRequest pageRequest);
 
     // Поиск бронирования по id и id автора бронирования:
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.id = :bookingId " +
             "AND b.booker.id = :bookerId ")
-    Booking findBookingByIdAndBookerId(long bookingId, long bookerId);
+    Booking findBookingByIdAndBookerId(Long bookingId, Long bookerId);
 
     // Поиск бронирования по id и id владельца вещи:
 
@@ -84,7 +87,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "INNER JOIN Item i ON b.item.id = i.id " +
             "WHERE i.owner.id = :ownerId " +
             "AND b.id = :bookingId ")
-    Booking findBookingByIdAndOwnerId(long bookingId, long ownerId);
+    Booking findBookingByIdAndOwnerId(Long bookingId, Long ownerId);
 
     // Для остального:
     Booking findFirstByBookerAndItemAndEndIsBeforeOrderByEndDesc(User user, Item item, LocalDateTime now);
@@ -93,5 +96,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "INNER JOIN Item i ON b.item.id = i.id " +
             "WHERE i.id = :itemId " +
             "ORDER BY b.start DESC")
-    List<Booking> findAllBookingsItem(long itemId);
+    List<Booking> findAllBookingsItem(Long itemId);
 }

@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.comment.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
@@ -11,10 +12,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentDto {
-    private long id;
+    private Long id;
     @NotBlank(message = "Отзыв должен содержать текст")
     private String text;
-    private long itemId;
+    private Long itemId;
     private String authorName;
+    @CreationTimestamp
     private LocalDateTime created;
 }

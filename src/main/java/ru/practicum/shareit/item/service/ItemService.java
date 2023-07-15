@@ -8,17 +8,17 @@ import java.util.List;
 
 public interface ItemService {
 
-    ItemDto create(long userId, ItemDto itemDto);
+    ItemDto create(Long userId, ItemDto itemDto);
 
-    ItemDto update(long userId, long itemId, ItemDto itemDto);
+    ItemDto update(Long userId, Long itemId, ItemDto itemDto);
 
-    List<ItemResponseDtoWithBooking> findAll(long userId);
+    List<ItemResponseDtoWithBooking> findAll(Long userId, Integer from, Integer size);
 
-    ItemResponseDtoWithBooking getItem(long userId, long itemId);
+    ItemResponseDtoWithBooking getItem(Long userId, Long itemId);
 
-    void delete(long itemId);
+    void delete(Long itemId);
 
-    List<ItemDto> findItemByName(String text);
+    List<ItemDto> findItemByName(String text, Integer from, Integer size);
 
-    CommentDto createComment(long userId, long itemId, CommentDto commentDto);
+    CommentDto createComment(Long userId, Long itemId, CommentDto commentDto);
 }
