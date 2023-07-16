@@ -96,10 +96,6 @@ public class BookingServiceImpl implements BookingService {
                 new NotFoundException("Пользователь с id " + userId + " не найден в базе данных"));
         LocalDateTime now = LocalDateTime.now(clock);
         List<Booking> bookings = new ArrayList<>();
-        if (from < 0 || size <= 0) {
-            throw new ValidationException("Индекс первого элемента не может быть отрицательным и количество " +
-                    "отображаемых элементов должно быть больше 0");
-        }
         PageRequest pageRequest = PageRequest.of(from / size, size);
         switch (state) {
             case "ALL":
@@ -142,10 +138,6 @@ public class BookingServiceImpl implements BookingService {
                 new NotFoundException("Пользователь с id " + ownerId + " не найден в базе данных"));
         LocalDateTime now = LocalDateTime.now(clock);
         List<Booking> bookings;
-        if (from < 0 || size <= 0) {
-            throw new ValidationException("Индекс первого элемента не может быть отрицательным и количество " +
-                    "отображаемых элементов должно быть больше 0");
-        }
         PageRequest pageRequest = PageRequest.of(from / size, size);
         switch (state) {
             case "ALL":

@@ -2,6 +2,7 @@ package ru.practicum.shareit.request.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDtoWithItems;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/requests")
 @RequiredArgsConstructor
+@Validated
 public class ItemRequestController {
     private final ItemRequestService itemRequestService;
 
@@ -37,8 +39,8 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public List<ItemRequestDtoWithItems> findAll(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                  @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
-                                  @RequestParam(defaultValue = "10") @Positive Integer size) {
+                                  @RequestParam(defaultValue = "0") @PositiveOrZero(message = "Индекс первого элемента не может быть отрицательным") Integer from,
+                                  @RequestParam(defaultValue = "10") @Positive (message = "количество отображаемых элементов должно быть больше 0") Integer size) {
         log.info("Получение списка запросов, созданных другими пользователями");
         return itemRequestService.findAll(userId, from, size);
 

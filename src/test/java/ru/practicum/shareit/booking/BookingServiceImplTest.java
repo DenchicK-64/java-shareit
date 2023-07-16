@@ -431,32 +431,6 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    public void findAllByBookerId_withNegativeFromParam_ValidationExceptionThrown() {
-        when(clock.getZone()).thenReturn(NOW_ZDT.getZone());
-        when(clock.instant()).thenReturn(NOW_ZDT.toInstant());
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
-        ValidationException exception = assertThrows(
-                ValidationException.class,
-                () -> bookingService.findAllByBookerId(testUser.getId(), "ALL", -1, 5));
-        assertEquals("Индекс первого элемента не может быть отрицательным и количество отображаемых " +
-                "элементов должно быть больше 0", exception.getMessage());
-        verify(userRepository, times(1)).findById(anyLong());
-    }
-
-    @Test
-    public void findAllByBookerId_withSizeParamIsZero_ValidationExceptionThrown() {
-        when(clock.getZone()).thenReturn(NOW_ZDT.getZone());
-        when(clock.instant()).thenReturn(NOW_ZDT.toInstant());
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
-        ValidationException exception = assertThrows(
-                ValidationException.class,
-                () -> bookingService.findAllByBookerId(testUser.getId(), "ALL", 0, 0));
-        assertEquals("Индекс первого элемента не может быть отрицательным и количество отображаемых " +
-                "элементов должно быть больше 0", exception.getMessage());
-        verify(userRepository, times(1)).findById(anyLong());
-    }
-
-    @Test
     public void findAllByBookerId_whenUserNotFound_thenNotFoundExceptionThrown() {
         long userId = 10;
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
@@ -618,32 +592,6 @@ public class BookingServiceImplTest {
                 ValidationException.class,
                 () -> bookingService.findAllByOwnerId(testUser.getId(), state, 0, 5));
         assertEquals("Unknown state: " + state, exception.getMessage());
-        verify(userRepository, times(1)).findById(anyLong());
-    }
-
-    @Test
-    public void findAllByOwnerId_withNegativeFromParam_ValidationExceptionThrown() {
-        when(clock.getZone()).thenReturn(NOW_ZDT.getZone());
-        when(clock.instant()).thenReturn(NOW_ZDT.toInstant());
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
-        ValidationException exception = assertThrows(
-                ValidationException.class,
-                () -> bookingService.findAllByOwnerId(testUser.getId(), "ALL", -1, 5));
-        assertEquals("Индекс первого элемента не может быть отрицательным и количество отображаемых " +
-                "элементов должно быть больше 0", exception.getMessage());
-        verify(userRepository, times(1)).findById(anyLong());
-    }
-
-    @Test
-    public void findAllByOwnerId_withSizeParamIsZero_ValidationExceptionThrown() {
-        when(clock.getZone()).thenReturn(NOW_ZDT.getZone());
-        when(clock.instant()).thenReturn(NOW_ZDT.toInstant());
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
-        ValidationException exception = assertThrows(
-                ValidationException.class,
-                () -> bookingService.findAllByOwnerId(testUser.getId(), "ALL", 0, 0));
-        assertEquals("Индекс первого элемента не может быть отрицательным и количество отображаемых " +
-                "элементов должно быть больше 0", exception.getMessage());
         verify(userRepository, times(1)).findById(anyLong());
     }
 

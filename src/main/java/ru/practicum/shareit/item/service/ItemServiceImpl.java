@@ -11,7 +11,6 @@ import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.NotAvailableException;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.OperationAccessException;
-import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.comment.mapper.CommentMapper;
 import ru.practicum.shareit.item.comment.model.Comment;
@@ -90,9 +89,6 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemResponseDtoWithBooking> findAll(Long userId, Integer from, Integer size) {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Пользователь с id" + userId + "не найден в базе данных"));
-        if (from < 0 || size <= 0) {
-            throw new ValidationException("Индекс первого элемента не может быть отрицательным и количество отображаемых элементов должно быть больше 0");
-        }
         PageRequest pageRequest = PageRequest.of(from / size, size);
         List<Item> items = itemRepository.findAllByOwnerId(userId, pageRequest);
         List<ItemResponseDtoWithBooking> itemResponseDtoWithBookingList = new ArrayList<>();
@@ -126,9 +122,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> findItemByName(String text, Integer from, Integer size) {
-        if (from < 0 || size <= 0) {
-            throw new ValidationException("Индекс первого элемента не может быть отрицательным и количество отображаемых элементов должно быть больше 0");
-        }
         PageRequest pageRequest = PageRequest.of(from / size, size);
         if (text != null && !text.isBlank()) {
             List<Item> allItems = itemRepository.search(text, pageRequest);

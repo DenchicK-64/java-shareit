@@ -12,7 +12,6 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.OperationAccessException;
-import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.comment.mapper.CommentMapper;
 import ru.practicum.shareit.item.comment.model.Comment;
@@ -216,28 +215,6 @@ public class ItemServiceImplTest {
     }
 
     @Test
-    public void findAll_withNegativeFromParam_ValidationExceptionThrown() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
-        ValidationException exception = assertThrows(
-                ValidationException.class,
-                () -> itemService.findAll(testUser.getId(), -1, 5));
-        assertEquals("Индекс первого элемента не может быть отрицательным и количество отображаемых " +
-                "элементов должно быть больше 0", exception.getMessage());
-        verify(userRepository, times(1)).findById(anyLong());
-    }
-
-    @Test
-    public void findAll_withSizeParamIsZero_ValidationExceptionThrown() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
-        ValidationException exception = assertThrows(
-                ValidationException.class,
-                () -> itemService.findAll(testUser.getId(), 0, 0));
-        assertEquals("Индекс первого элемента не может быть отрицательным и количество отображаемых " +
-                "элементов должно быть больше 0", exception.getMessage());
-        verify(userRepository, times(1)).findById(anyLong());
-    }
-
-    @Test
     public void getItem_whenDataIsCorrect_thenReturnItem() {
         when(clock.getZone()).thenReturn(NOW_ZDT.getZone());
         when(clock.instant()).thenReturn(NOW_ZDT.toInstant());
@@ -313,24 +290,6 @@ public class ItemServiceImplTest {
         assertNotNull(itemDtoList);
         assertEquals(itemDtoList.size(), 0);
         verify(itemRepository, times(1)).search(anyString(), any());
-    }
-
-    @Test
-    public void findItemByName_withNegativeFromParam_ValidationExceptionThrown() {
-        ValidationException exception = assertThrows(
-                ValidationException.class,
-                () -> itemService.findItemByName("текст", -1, 5));
-        assertEquals("Индекс первого элемента не может быть отрицательным и количество отображаемых " +
-                "элементов должно быть больше 0", exception.getMessage());
-    }
-
-    @Test
-    public void findItemByName_withSizeParamIsZero_ValidationExceptionThrown() {
-        ValidationException exception = assertThrows(
-                ValidationException.class,
-                () -> itemService.findItemByName("текст", 0, 0));
-        assertEquals("Индекс первого элемента не может быть отрицательным и количество отображаемых " +
-                "элементов должно быть больше 0", exception.getMessage());
     }
 
     @Test

@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -171,30 +170,6 @@ public class ItemRequestServiceImplTest {
                 () -> itemRequestService.findAll(userId, 0, 5));
         assertEquals("Пользователь с id " + userId + " не найден в базе данных", exception.getMessage());
         verify(userRepository, times(1)).findById(userId);
-    }
-
-    @Test
-    public void findAll_withNegativeFromParam_ValidationExceptionThrown() {
-        long userId = 10;
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
-        ValidationException exception = assertThrows(
-                ValidationException.class,
-                () -> itemRequestService.findAll(userId, -1, 5));
-        assertEquals("Индекс первого элемента не может быть отрицательным и количество отображаемых " +
-                "элементов должно быть больше 0", exception.getMessage());
-        verify(userRepository, times(1)).findById(anyLong());
-    }
-
-    @Test
-    public void findAll_withSizeParamIsZero_ValidationExceptionThrown() {
-        long userId = 10;
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
-        ValidationException exception = assertThrows(
-                ValidationException.class,
-                () -> itemRequestService.findAll(userId, 0, 0));
-        assertEquals("Индекс первого элемента не может быть отрицательным и количество отображаемых " +
-                "элементов должно быть больше 0", exception.getMessage());
-        verify(userRepository, times(1)).findById(anyLong());
     }
 
     @Test

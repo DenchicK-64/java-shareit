@@ -16,7 +16,6 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.exceptions.*;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -54,9 +53,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public List<ItemRequestDtoWithItems> findAll(Long userId, Integer from, Integer size) {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Пользователь с id " + userId + " не найден в базе данных"));
-        if (from < 0 || size <= 0) {
-            throw new ValidationException("Индекс первого элемента не может быть отрицательным и количество отображаемых элементов должно быть больше 0");
-        }
         PageRequest pageRequest = PageRequest.of(from / size, size, Sort.by("created"));
         List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequesterIdIsNot(userId, pageRequest);
         return convertToItemRequestDtoWithItemsList(itemRequests);
