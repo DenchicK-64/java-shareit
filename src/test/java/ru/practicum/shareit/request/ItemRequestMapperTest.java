@@ -40,7 +40,7 @@ public class ItemRequestMapperTest {
     }
 
     @Test
-    public void toItemRequestDtoWithItems(){
+    public void toItemRequestDtoWithItems() {
         ItemRequestDtoWithItems actualRequest = ItemRequestMapper.toItemRequestDtoWithItems(itemRequest, List.of(testItemDto));
         assertEquals(actualRequest, itemRequestDtoWithItems);
         }
