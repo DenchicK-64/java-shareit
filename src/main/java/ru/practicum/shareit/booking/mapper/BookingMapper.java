@@ -5,7 +5,9 @@ import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.dto.ShortBookingDto;
 import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
@@ -17,8 +19,8 @@ public class BookingMapper {
                 booking.getId(),
                 booking.getStart(),
                 booking.getEnd(),
-                booking.getItem(),
-                booking.getBooker(),
+                ItemMapper.toItemDto(booking.getItem()),
+                UserMapper.toUserDto(booking.getBooker()),
                 booking.getStatus()
         );
     }
@@ -48,5 +50,4 @@ public class BookingMapper {
                 .map(BookingMapper::toBookingResponseDto)
                 .collect(Collectors.toList());
     }
-
 }

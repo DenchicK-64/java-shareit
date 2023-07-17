@@ -20,13 +20,13 @@ public class CommentMapper {
         );
     }
 
-    public static Comment toComment(CommentDto commentDto, User author, Item item) {
+    public static Comment toComment(CommentDto commentDto, User author, Item item, LocalDateTime time) {
         return new Comment(
                 commentDto.getId(),
                 commentDto.getText(),
                 item,
                 author,
-                LocalDateTime.now()
+                time
         );
     }
 

@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto update(long userId, UserDto userDto) {
+    public UserDto update(Long userId, UserDto userDto) {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Пользователь с id" + userId + "не найден в базе данных"));
         if (userDto.getEmail() != null) {
@@ -51,14 +51,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUser(long userId) {
+    public UserDto getUser(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Пользователь с id" + userId + "не найден в базе данных"));
         return toUserDto(user);
     }
 
     @Override
-    public void delete(long userId) {
+    public void delete(Long userId) {
         userRepository.deleteById(userId);
     }
 }

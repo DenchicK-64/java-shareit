@@ -15,11 +15,12 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ItemDto {
-    private long id;
+    private Long id;
     @NotBlank(message = "Название должно содержать текст")
     private String name;
     @NotBlank(message = "Описание должно содержать текст")
     private String description;
     @NotNull
     private Boolean available;
+    private Long requestId;
 }

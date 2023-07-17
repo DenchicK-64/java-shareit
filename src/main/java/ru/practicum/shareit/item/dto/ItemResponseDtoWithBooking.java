@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ItemResponseDtoWithBooking {
-    private long id;
+    private Long id;
     @NotBlank(message = "Название должно содержать текст")
     private String name;
     @NotBlank(message = "Описание должно содержать текст")

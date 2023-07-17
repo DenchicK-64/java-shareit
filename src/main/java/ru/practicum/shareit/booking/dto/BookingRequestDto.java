@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingRequestDto {
-    private long id;
+    private Long id;
     @NotNull
-    private long itemId;
+    private Long itemId;
     @NotNull
     @FutureOrPresent
     private LocalDateTime start;
