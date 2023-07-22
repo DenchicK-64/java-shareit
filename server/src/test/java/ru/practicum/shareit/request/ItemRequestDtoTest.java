@@ -21,11 +21,18 @@ public class ItemRequestDtoTest {
     private JacksonTester<ItemRequestDto> json;
     UserDto testUserDto;
     ItemRequestDto testItemRequestDto;
+    private LocalDateTime now = LocalDateTime.of(
+            2023,
+            7,
+            10,
+            10,
+            10,
+            10);
 
     @BeforeEach
     public void setUp() {
         testUserDto = new UserDto(1L, "Test_User", "mail@somemail.ru");
-        testItemRequestDto = new ItemRequestDto(1L, "Test_Description", testUserDto, LocalDateTime.now());
+        testItemRequestDto = new ItemRequestDto(1L, "Test_Description", testUserDto, now);
     }
 
     @Test

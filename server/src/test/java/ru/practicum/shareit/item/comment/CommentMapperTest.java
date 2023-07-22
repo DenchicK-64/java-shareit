@@ -14,14 +14,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CommentMapperTest {
+    private LocalDateTime now = LocalDateTime.of(
+            2023,
+            7,
+            10,
+            10,
+            10,
+            10);
     User testUser = new User(1L, "Test_User", "mail@somemail.ru");
     User testUserTwo = new User(2L, "Test_User2", "mail2@somemail.ru");
     Item testItem = new Item(1L, "Test_Name", "Test_Description", true, testUserTwo, null);
     Item testItemTwo = new Item(2L, "Test_Name2", "Test_Description2", true, testUser, null);
-    Comment commentOne = new Comment(1L, "some text", testItem, testUserTwo, LocalDateTime.now());
-    CommentDto commentOneDto = new CommentDto(1L, "some text", testItem.getId(), "Test_User2", LocalDateTime.now());
-    Comment commentTwo = new Comment(2L, "some text", testItemTwo, testUser, LocalDateTime.now());
-    CommentDto commentTwoDto = new CommentDto(2L, "some text", testItemTwo.getId(), "Test_User", LocalDateTime.now());
+    Comment commentOne = new Comment(1L, "some text", testItem, testUserTwo, now);
+    CommentDto commentOneDto = new CommentDto(1L, "some text", testItem.getId(), "Test_User2", now);
+    Comment commentTwo = new Comment(2L, "some text", testItemTwo, testUser, now);
+    CommentDto commentTwoDto = new CommentDto(2L, "some text", testItemTwo.getId(), "Test_User", now);
 
     @Test
     public void toCommentDtoTest() {
@@ -31,7 +38,7 @@ public class CommentMapperTest {
 
     @Test
     public void toCommentTest() {
-        Comment actualComment = CommentMapper.toComment(commentOneDto, testUserTwo, testItem, LocalDateTime.now());
+        Comment actualComment = CommentMapper.toComment(commentOneDto, testUserTwo, testItem, now);
         assertEquals(actualComment, commentOne);
     }
 
