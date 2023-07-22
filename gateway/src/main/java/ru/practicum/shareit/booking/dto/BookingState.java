@@ -16,7 +16,7 @@ public enum BookingState {
 	// Ожидающие подтверждения
 	WAITING;
 
-	public static Optional<BookingState> from (String stringState) {
+	public static Optional<BookingState> from(String stringState) {
 		for (BookingState state : values()) {
 			if (state.name().equalsIgnoreCase(stringState)) {
 				return Optional.of(state);
