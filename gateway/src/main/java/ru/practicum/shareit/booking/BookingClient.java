@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.shareit.booking.dto.ShortBookingRequestDto;
 import ru.practicum.shareit.client.BaseClient;
 
 import java.util.Map;
@@ -27,8 +27,8 @@ public class BookingClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> create(Long userId, BookingRequestDto bookingRequestDto) {
-        return post("", userId, bookingRequestDto);
+    public ResponseEntity<Object> create(Long userId, ShortBookingRequestDto shortBookingRequestDto) {
+        return post("", userId, shortBookingRequestDto);
     }
 
     public ResponseEntity<Object> approve(Long userId, Long bookingId, Boolean approved) {

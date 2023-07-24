@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.shareit.booking.dto.ShortBookingRequestDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -24,9 +24,9 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                         @Valid @RequestBody BookingRequestDto bookingRequestDto) {
+                                         @Valid @RequestBody ShortBookingRequestDto shortBookingRequestDto) {
         log.info("Запрос на бронирование создан");
-        return bookingClient.create(userId, bookingRequestDto);
+        return bookingClient.create(userId, shortBookingRequestDto);
     }
 
     @PatchMapping("/{bookingId}")

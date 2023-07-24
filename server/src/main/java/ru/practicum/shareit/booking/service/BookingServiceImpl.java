@@ -59,6 +59,9 @@ public class BookingServiceImpl implements BookingService {
                 new NotFoundException("Пользователь с id " + userId + " не найден в базе данных"));
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
                 new NotFoundException("Запрос на бронирование с id " + bookingId + " не найден в базе данных"));
+        if (!booking.getStart().isAfter(LocalDateTime.now())) {
+            throw new TimeConflictException("Время начала брони не может быть раньше текущего");
+        }
         if (!userId.equals(booking.getItem().getOwner().getId())) {
             throw new NotFoundException("Пользователь с id= " + userId + " не является владельцем вещи с id=" + booking.getItem().getId());
         }

@@ -49,6 +49,7 @@ public class BookingServiceImplTest {
     Item testItem;
     Item testItemTwo;
     BookingRequestDto testBookingRequestDto;
+    BookingRequestDto testBookingRequestDtoTwo;
     Booking testBookingOne;
     Booking testBookingTwo;
 
@@ -58,14 +59,14 @@ public class BookingServiceImplTest {
         testUserTwo = new User(2L, "Test_User 2", "user@somemail.ru");
         testItem = new Item(1L, "Test_Name", "Test_Description", true, testUser, null);
         testItemTwo = new Item(2L, "Вещь", "Хорошая", true, testUserTwo, null);
-        testBookingRequestDto = new BookingRequestDto(1L, 1L, LocalDateTime.now().minusMinutes(20),
-                LocalDateTime.now().plusMinutes(20), Status.WAITING);
-        testBookingRequestDto = new BookingRequestDto(2L, 2L, LocalDateTime.now().plusDays(8),
+        testBookingRequestDto = new BookingRequestDto(1L, 1L, LocalDateTime.now().plusMinutes(20),
+                LocalDateTime.now().plusMinutes(45), Status.WAITING);
+        testBookingRequestDtoTwo = new BookingRequestDto(2L, 2L, LocalDateTime.now().plusDays(8),
                 LocalDateTime.now().plusDays(10), Status.WAITING);
-        testBookingOne = new Booking(1L, LocalDateTime.now().minusMinutes(20),
-                LocalDateTime.now().plusMinutes(20), testItem, testUserTwo, Status.WAITING);
-        testBookingTwo = new Booking(2L, LocalDateTime.now().plusDays(8),
-                LocalDateTime.now().plusDays(10), testItem, testUserTwo, Status.WAITING);
+        testBookingOne = new Booking(1L, testBookingRequestDto.getStart(), testBookingRequestDto.getEnd(),
+                testItem, testUserTwo, Status.WAITING);
+        testBookingTwo = new Booking(2L, testBookingRequestDtoTwo.getStart(), testBookingRequestDto.getEnd(),
+                testItemTwo, testUser, Status.WAITING);
     }
 
     @Test
@@ -200,6 +201,20 @@ public class BookingServiceImplTest {
         assertEquals("Запрос на бронирование с id " + bookingId + " не найден в базе данных", exception.getMessage());
         verify(userRepository, times(1)).findById(anyLong());
         verify(bookingRepository, times(1)).findById(bookingId);
+    }
+
+    @Test
+    public void approve_whenBookingWithStartIsBeforeCurrentTime_thenBookingNotBeApproved() {
+        testBookingOne.setStart(LocalDateTime.now().minusMinutes(1));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.ofNullable(testBookingOne));
+
+        TimeConflictException exception = assertThrows(
+                TimeConflictException.class,
+                () -> bookingService.approve(testUser.getId(), testBookingRequestDto.getId(), true));
+        assertEquals("Время начала брони не может быть раньше текущего", exception.getMessage());
+        verify(userRepository, times(1)).findById(anyLong());
+        verify(bookingRepository, times(1)).findById(anyLong());
     }
 
     @Test

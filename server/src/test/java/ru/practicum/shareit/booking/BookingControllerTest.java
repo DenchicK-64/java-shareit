@@ -52,13 +52,6 @@ public class BookingControllerTest {
 
     @BeforeEach
     public void setUp() {
-        /*now = LocalDateTime.of(
-                2023,
-                7,
-                10,
-                10,
-                10,
-                10);*/
         testUser = new UserDto(1L, "Test_User", "mail@somemail.ru");
         testUserTwo = new UserDto(2L, "Test_User 2", "user@somemail.ru");
         testItem = new ItemDto(1L, "Test_Name", "Test_Description", true, null);
@@ -223,7 +216,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    public void approve_whenInvokedBookingNotFound_thenReturnStatusBNotFound() {
+    public void approve_whenInvokedBookingNotFound_thenReturnStatusNotFound() {
         when(bookingService.approve(1L, 10L, true))
                 .thenThrow(new NotFoundException("Запрос на бронирование с id " + 10 + " не найден в базе данных"));
 
